@@ -88,6 +88,15 @@ impl App {
             error!("Blockchain is still in initial block download");
             return Err(anyhow::anyhow!("Blockchain is still in initial block download"));
         }
+
+        let mempool_info = self.rpc_client.get_mempool_info().await?;
+        info!("Mempool info: {:?}", mempool_info);
+
+        if !mempool_info.loaded {
+            error!("Mempool is not loaded");
+            return Err(anyhow::anyhow!("Mempool is not loaded"));
+        }
+
         info!("Initializing mempool tracker");
         // Run migrations
         info!("Running migrations");
