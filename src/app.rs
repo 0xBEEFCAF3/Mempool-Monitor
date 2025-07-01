@@ -81,6 +81,13 @@ impl App {
     }
 
     pub async fn init(&mut self) -> Result<()> {
+        let blockchain_info = self.rpc_client.get_blockchain_info().await?;
+        info!("Blockchain info: {:?}", blockchain_info);
+
+        if !blockchain_info.initial_block_download {
+            error!("Blockchain is still in initial block download");
+            return Err(anyhow::anyhow!("Blockchain is still in initial block download"));
+        }
         info!("Initializing mempool tracker");
         // Run migrations
         info!("Running migrations");
